@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expression Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Expression Calculator</h1>
+    <form id="calcForm">
+        <label for="expression">Enter an expression:</label>
+        <input type="text" id="expression" name="expression" required>
+        <button type="submit">Calculate</button>
+    </form>
+    <div id="result">
+        <img id="plotImage" src="" alt="Plot">
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#calcForm').submit(function (event) {
+                event.preventDefault();
+                var expression = $('#expression').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/calculate',
+                    data: { expression: expression },
+                    xhrFields: {
+                        responseType: 'blob'  // Set the response type to 'blob'
+                    },
+                    success: function (response) {
+                         var imageUrl = URL.createObjectURL(response);
+                        $('#plotImage').attr('src', imageUrl); 
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        $('#plotImage').attr('src', '');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
